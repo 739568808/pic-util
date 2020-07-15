@@ -28,7 +28,7 @@ public class PicUtilApplication {
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         // Setting the width and height of frame
-        frame.setSize(400, 250);
+        frame.setSize(400, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         /* 创建面板，这个类似于 HTML 的 div 标签
@@ -109,6 +109,14 @@ public class PicUtilApplication {
         kb2.setBounds(270,80,20,25);
         panel.add(kb2);
 
+        JTextArea textArea = new JTextArea();
+        JScrollPane scroll = new JScrollPane(textArea);
+        scroll.setBounds(10,150,375,406);
+        scroll.setForeground(Color.gray);
+        scroll.setFont(new Font("宋体", Font.PLAIN, 11));
+
+
+
         // 创建登录按钮
         JButton button = new JButton("开始压缩图片");
         button.setBounds(10, 110, 120, 25);
@@ -122,21 +130,17 @@ public class PicUtilApplication {
 
 
                 //开始压缩图片
-                compress(path,sfzMin,sfzMax,czMin,czMax);
-
+                compress(textArea,panel,path,sfzMin,sfzMax,czMin,czMax);
+                JOptionPane.showMessageDialog(panel,"图片处理完成！","提示",JOptionPane.INFORMATION_MESSAGE);
             }
         });
         panel.add(button);
 
-        JLabel desLable = new JLabel("<html>提示：开始压缩图片后，请勿重复提交。<br> 使用过程中出现任何问题，联系QQ：739568808</html>");
-        desLable.setBounds(10,130,300,50);
-        desLable.setForeground(Color.gray);
-        desLable.setFont(new Font("宋体", Font.PLAIN, 11));
 
-        panel.add(desLable);
+        panel.add(scroll);
     }
 
-    public static void compress(String path,int sfzMin,int sfzMax,int czMin,int czMax) {
+    public static void compress(JTextArea textArea,JPanel panel,String path,int sfzMin,int sfzMax,int czMin,int czMax) {
         try {
             File file = new File(path);
             if (file.exists()) {
@@ -147,13 +151,17 @@ public class PicUtilApplication {
                 } else {
                     for (File f : files) {
                         if (f.isDirectory()) {
-                            compress(f.getAbsolutePath(),sfzMin,sfzMax,czMin,czMax);
+                            compress(textArea,panel,f.getAbsolutePath(),sfzMin,sfzMax,czMin,czMax);
                         } else {
                             System.out.println("文件:" + f.getAbsolutePath()+"大小："+f.length());
                             String fileName = f.getName();
                             int kb =  (int)Math.ceil(f.length()/1024);
                             //文件名后缀
-                            String prx = fileName.split("\\.")[1].toLowerCase();
+                            String[] split = fileName.split("\\.");
+                            if (split.length==1){
+                                continue;
+                            }
+                            String prx = split[1].toLowerCase();
                             if (prx.contains("jpg") || prx.contains("png")){
                                 //判断图片名包含，身份证、 寸照
                                 if (fileName.contains("身份证")){
@@ -161,13 +169,13 @@ public class PicUtilApplication {
                                         //TODO 当前文件大小大于指定身份证大小
                                         //TODO 修改方法，传入文件路径+文件名，方便起一个别名
 
-                                        PicUtils.compress(f,190);
+                                        PicUtils.compress(textArea,f,sfzMax);
                                     }
                                 }
                                 if (fileName.contains("寸照")){
                                     if (kb>czMax){
                                         //当前文件大小大于指定寸照大小
-                                        PicUtils.compress(f,40);
+                                        PicUtils.compress(textArea,f,czMax);
                                     }
                                 }
                             }
@@ -183,9 +191,5 @@ public class PicUtilApplication {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-
-
     }
 }

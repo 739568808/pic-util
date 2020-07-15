@@ -2,11 +2,13 @@ package com.pic.util.util;
 
 
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -36,6 +38,24 @@ public class PicUtils {
         byte[] data = bos.toByteArray();
         return data;
     }
+
+    public static byte[] fileToByte(File img) throws Exception {
+        byte[] bytes = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            BufferedImage bi;
+            bi = ImageIO.read(img);
+            ImageIO.write(bi, "JPG", baos);
+            bytes = baos.toByteArray();
+            System.err.println(bytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            baos.close();
+        }
+        return bytes;
+    }
+
     /**
      * 将图片压缩到指定大小以内
      *
@@ -44,7 +64,7 @@ public class PicUtils {
      * @return 压缩后的图片数据
      */
     public static byte[] compressUnderSize(byte[] srcImgData, long maxSize) {
-        double scale = 0.9;
+        double scale = 0.99;
         byte[] imgData = Arrays.copyOf(srcImgData, srcImgData.length);
 
         if (imgData.length > maxSize) {
@@ -102,16 +122,24 @@ public class PicUtils {
         }
     }
 
-    public static void compress(File f,int max)  {
+    public static void compress(JTextArea textArea,File f, int max)  {
+        String text = textArea.getText();
         try {
-            byte[] imgBytes = getByteByPic(f.getAbsolutePath());
-            byte[] resultImg = compressUnderSize(imgBytes,max * 1024);
+//            byte[] imgBytes = getByteByPic(f.getAbsolutePath());
+//            byte[] resultImg = compressUnderSize(imgBytes,max);
             String name = f.getName();
             String[]split = name.split("\\.");
             String fileName =split[0]+"_压缩后."+split[1];
-            byte2image(resultImg,f.getAbsolutePath().replaceAll(name.trim(),"")+fileName);
+//            byte2image(resultImg,f.getAbsolutePath().replaceAll(name.trim(),"")+fileName);
+
+            byte[] bytes = FileUtils.readFileToByteArray(new File(f.getAbsolutePath()));
+            bytes = PicUt.compressPicForScale(bytes, max, "x");// 图片小于300kb
+            FileUtils.writeByteArrayToFile(new File(f.getAbsolutePath().replaceAll(name.trim(),"")+fileName), bytes);
+            textArea.append("成功："+f.getAbsolutePath()+"\r\n");
+
         }catch (Exception e){
             e.printStackTrace();
+            textArea.append("【失败】："+f.getAbsolutePath()+"\r\n");
         }
 
     }
