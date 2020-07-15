@@ -22,16 +22,7 @@ import java.util.Arrays;
 public class PicUtils {
 
     private static Logger logger = LoggerFactory.getLogger(PicUtils.class);
-    public static void main(String[] args) throws IOException {
-        long timeStart = System.currentTimeMillis();
-        String imgLocalUrl = "E:\\tp\\abc.jpg";
 
-        byte[] imgBytes = getByteByPic(imgLocalUrl);
-        byte[] resultImg = compressUnderSize(imgBytes,800 * 1024);
-        byte2image(resultImg,"E:\\tp\\timga.jpg");
-        long timeEnd = System.currentTimeMillis();
-        System.out.println("耗时："+ (timeEnd - timeStart));
-    }
 
     public static byte[] getByteByPic(String imageUrl) throws IOException {
         File imageFile = new File(imageUrl);

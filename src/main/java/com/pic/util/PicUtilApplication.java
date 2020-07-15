@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 //@SpringBootApplication
-@Slf4j
+//@Slf4j
 public class PicUtilApplication {
 
 //    public static void main(String[] args) {
@@ -23,9 +24,11 @@ public class PicUtilApplication {
     private static String PIC_FORMAT = "jpg|png";
     public static void main(String[] args) {
         // 创建 JFrame 实例
-        JFrame frame = new JFrame("湖南创森教育-图片压缩工具");
+        JFrame frame = new JFrame("创森教育-图片压缩工具V1.0");
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
         // Setting the width and height of frame
-        frame.setSize(350, 200);
+        frame.setSize(400, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         /* 创建面板，这个类似于 HTML 的 div 标签
@@ -56,8 +59,14 @@ public class PicUtilApplication {
         filePathLabel.setBounds(10,20,80,25);
         panel.add(filePathLabel);
         JTextField filePathText = new JTextField(20);
+//        JFileChooser fileChooser = new JFileChooser();
+//        FileSystemView fsv = FileSystemView.getFileSystemView();  //注意了，这里重要的一句
+//        fileChooser.setCurrentDirectory(fsv.getHomeDirectory());
+//        fileChooser.setDialogTitle("请选择要上传的文件...");
+//        fileChooser.setApproveButtonText("确定");
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
         filePathText.setBounds(100,20,180,25);
-        filePathText.setText("");
         panel.add(filePathText);
 
 
@@ -169,7 +178,7 @@ public class PicUtilApplication {
                     }
                 }
             }else {
-                log.info("文件不存在！");
+                System.out.println("文件不存在！");
             }
         }catch (Exception e){
             e.printStackTrace();
