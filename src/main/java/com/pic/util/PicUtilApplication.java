@@ -128,10 +128,20 @@ public class PicUtilApplication {
                 int czMin = Integer.valueOf(czMinText.getText());
                 int czMax = Integer.valueOf(czMaxText.getText());
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        button.setEnabled(false);
+                        //图片格式转换
+                        conver(textArea,path);
+                        //开始压缩图片
+                        compress(textArea,panel,path,sfzMin,sfzMax,czMin,czMax);
 
-                //开始压缩图片
-                compress(textArea,panel,path,sfzMin,sfzMax,czMin,czMax);
-                JOptionPane.showMessageDialog(panel,"图片处理完成！","提示",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(panel,"图片处理完成！","提示",JOptionPane.INFORMATION_MESSAGE);
+                        button.setEnabled(true);
+                    }
+                }).start();
+
             }
         });
         panel.add(button);
@@ -179,9 +189,6 @@ public class PicUtilApplication {
                                     }
                                 }
                             }
-
-
-                            //PIC_FORMAT
                         }
                     }
                 }
@@ -190,6 +197,52 @@ public class PicUtilApplication {
             }
         }catch (Exception e){
             e.printStackTrace();
+        }finally {
+
         }
     }
+
+
+    public static void conver(JTextArea textArea,String path) {
+        try {
+            File file = new File(path);
+            if (file.exists()) {
+                File[] files = file.listFiles();
+                if (null == files || files.length == 0) {
+                    System.out.println("文件夹是空的!");
+                    return;
+                } else {
+                    for (File f : files) {
+                        if (f.isDirectory()) {
+                            conver(textArea,f.getAbsolutePath());
+                        } else {
+                            String fileName = f.getName();
+                            //文件名后缀
+                            String[] split = fileName.split("\\.");
+                            if (split.length==1){
+                                continue;
+                            }
+                            String prx = split[1].toLowerCase();
+                            if (prx.toLowerCase().contains("png")){
+                                //将png转换为jpg
+                                PicUtils.conver(textArea,f.getAbsolutePath());
+
+                            }
+                        }
+                    }
+                }
+            }else {
+                System.out.println("文件不存在！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+
+        }
+    }
+
+
+
+
+
 }

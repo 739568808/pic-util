@@ -135,13 +135,39 @@ public class PicUtils {
             byte[] bytes = FileUtils.readFileToByteArray(new File(f.getAbsolutePath()));
             bytes = PicUt.compressPicForScale(bytes, max, "x");// 图片小于300kb
             FileUtils.writeByteArrayToFile(new File(f.getAbsolutePath().replaceAll(name.trim(),"")+fileName), bytes);
-            textArea.append("成功："+f.getAbsolutePath()+"\r\n");
+            textArea.append("压缩成功："+f.getAbsolutePath()+"\r\n");
 
         }catch (Exception e){
             e.printStackTrace();
-            textArea.append("【失败】："+f.getAbsolutePath()+"\r\n");
+            textArea.append("【压缩失败】："+f.getAbsolutePath()+"\r\n");
         }
 
+    }
+
+    public static void conver(JTextArea textArea,String pngUrl){
+        BufferedImage bufferedImage;
+        try {
+            // read image file
+            bufferedImage = ImageIO.read(new File(pngUrl));
+            // create a blank, RGB, same width and height, and a white
+            // background
+            BufferedImage newBufferedImage = new BufferedImage(
+                    bufferedImage.getWidth(), bufferedImage.getHeight(),
+                    BufferedImage.TYPE_INT_RGB);
+            // TYPE_INT_RGB:创建一个RBG图像，24位深度，成功将32位图转化成24位
+            newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0,
+                    Color.WHITE, null);
+            // write to jpeg file
+            String[]split = pngUrl.split("\\.");
+            String filePath =split[0]+".jpg";
+
+            ImageIO.write(newBufferedImage, "jpg", new File(filePath));
+            textArea.append("格式转换成功："+filePath+"\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            textArea.append("【格式转换失败】："+pngUrl+"\r\n");
+        }
     }
 
 }
