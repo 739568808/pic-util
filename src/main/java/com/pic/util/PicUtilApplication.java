@@ -2,6 +2,8 @@ package com.pic.util;
 
 import com.pic.util.util.PicUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,7 +12,10 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 //@SpringBootApplication
@@ -22,9 +27,14 @@ public class PicUtilApplication {
 //    }
 
     private static String PIC_FORMAT = "jpg|png";
-    public static void main(String[] args) {
+
+
+    public  PicUtilApplication(String phone) throws Exception {
+
+        org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+        UIManager.put("RootPane.setupButtonVisible",false);
         // 创建 JFrame 实例
-        JFrame frame = new JFrame("创森教育-图片压缩工具V1.0");
+        JFrame frame = new JFrame("创森教育-图片压缩工具V1.1    欢迎,"+phone);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         // Setting the width and height of frame
@@ -36,19 +46,26 @@ public class PicUtilApplication {
          * 面板中我们可以添加文本字段，按钮及其他组件。
          */
         JPanel panel = new JPanel();
+
+        Toolkit toolkit=Toolkit.getDefaultToolkit();
+        Dimension screen = toolkit.getScreenSize();
+        int x = (screen.width-frame.getWidth()) / 2;
+        int y = (screen.height-frame.getHeight()) / 2;
+        frame.setLocation(x, y);
+
         // 添加面板
         frame.add(panel);
         /*
          * 调用用户定义的方法并添加组件到面板
          */
-        placeComponents(panel);
+        placeComponents(frame,panel);
 
         // 设置界面可见
         frame.setVisible(true);
     }
 
 
-    private static void placeComponents(JPanel panel) {
+    private static void placeComponents(JFrame frame,JPanel panel) {
 
         /* 布局部分我们这边不多做介绍
          * 这边设置布局为 null
@@ -58,7 +75,7 @@ public class PicUtilApplication {
         JLabel filePathLabel = new JLabel("扫描文件夹:");
         filePathLabel.setBounds(10,20,80,25);
         panel.add(filePathLabel);
-        JTextField filePathText = new JTextField(20);
+        JTextField filePathText = new JTextField();
 //        JFileChooser fileChooser = new JFileChooser();
 //        FileSystemView fsv = FileSystemView.getFileSystemView();  //注意了，这里重要的一句
 //        fileChooser.setCurrentDirectory(fsv.getHomeDirectory());
@@ -67,6 +84,61 @@ public class PicUtilApplication {
 //        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         filePathText.setBounds(100,20,180,25);
+        filePathText.setEditable(false);
+        filePathText.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                {
+
+                    try {
+                        String path= null;
+                        JFileChooser fc = new JFileChooser();
+
+
+
+                        fc.setDialogTitle("请选择要扫描的文件夹...");
+
+                        fc.setApproveButtonText("确定");
+                        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                        if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(frame)) {
+                            path=fc.getSelectedFile().getPath();
+                        }
+                        if (StringUtils.isEmpty(path)){
+                            //JOptionPane.showMessageDialog(panel,"文件未上传！","提示",JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        filePathText.setText(path);
+                    }catch (Exception ee){
+                        JOptionPane.showMessageDialog(panel,"文件夹选择失败！","提示",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         panel.add(filePathText);
 
 
@@ -111,7 +183,7 @@ public class PicUtilApplication {
 
         JTextArea textArea = new JTextArea();
         JScrollPane scroll = new JScrollPane(textArea);
-        scroll.setBounds(10,150,375,406);
+        scroll.setBounds(10,150,328,365);
         scroll.setForeground(Color.gray);
         scroll.setFont(new Font("宋体", Font.PLAIN, 11));
 
@@ -119,7 +191,10 @@ public class PicUtilApplication {
 
         // 创建登录按钮
         JButton button = new JButton("开始压缩图片");
-        button.setBounds(10, 110, 120, 25);
+        button.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
+        button.setFont(new Font("宋体", Font.PLAIN, 15));
+        button.setForeground(Color.WHITE);
+        button.setBounds(110, 120, 120, 25);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String path = filePathText.getText();
@@ -148,6 +223,10 @@ public class PicUtilApplication {
 
 
         panel.add(scroll);
+    }
+
+    public static void main(String[] args) throws Exception {
+        new PicUtilApplication("111");
     }
 
     public static void compress(JTextArea textArea,JPanel panel,String path,int sfzMin,int sfzMax,int czMin,int czMax) {
