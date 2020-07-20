@@ -10,4 +10,5 @@ public class Constant {
     public static String GANGWEI_URL=BASE_URL+"gangwei";
     public static String UPD_STUDENT_URL=BASE_URL+"upd/student";
     public static String UPLOAD_STUDENT_URL=BASE_URL+"upload/student";
+    public static String TITLE="创森教育-图片处理工具V1.1";
 }

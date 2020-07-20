@@ -38,7 +38,7 @@ public class Login {
         try {
             org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
             UIManager.put("RootPane.setupButtonVisible",false);
-            JFrame frame = new JFrame("登陆");
+            JFrame frame = new JFrame(Constant.TITLE+" - 登陆");
             frame.setResizable(false);
             frame.setLocationRelativeTo(null);
 

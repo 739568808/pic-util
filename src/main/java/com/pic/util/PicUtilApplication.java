@@ -1,22 +1,17 @@
 package com.pic.util;
 
+import com.pic.util.util.Constant;
 import com.pic.util.util.PicUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 
 //@SpringBootApplication
 //@Slf4j
@@ -34,7 +29,7 @@ public class PicUtilApplication {
         org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
         UIManager.put("RootPane.setupButtonVisible",false);
         // 创建 JFrame 实例
-        JFrame frame = new JFrame("创森教育-图片压缩工具V1.1    欢迎,"+phone);
+        JFrame frame = new JFrame(Constant.TITLE+"   欢迎,"+phone);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         // Setting the width and height of frame
@@ -223,10 +218,6 @@ public class PicUtilApplication {
 
 
         panel.add(scroll);
-    }
-
-    public static void main(String[] args) throws Exception {
-        new PicUtilApplication("111");
     }
 
     public static void compress(JTextArea textArea,JPanel panel,String path,int sfzMin,int sfzMax,int czMin,int czMax) {
